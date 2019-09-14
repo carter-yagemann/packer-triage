@@ -7,8 +7,16 @@ Welcome to packer-triage's documentation!
 =========================================
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Quick Start:
+
+   quick/install
+   quick/config
+   quick/frontend
+
+.. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Details:
    
    modeling/modeling
 
@@ -17,7 +25,7 @@ Welcome to packer-triage's documentation!
    :caption: API:
 
    modeling/modules
-
+   frontend/modules
 
 Indices and tables
 ==================

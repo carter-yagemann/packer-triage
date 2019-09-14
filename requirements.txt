@@ -1,4 +1,6 @@
 elasticsearch
+Flask
+gunicorn
 matplotlib
 pandas
 pefile
