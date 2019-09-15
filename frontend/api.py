@@ -22,9 +22,19 @@ from flask import *
 from hashlib import sha256
 import json
 import os
+import pymongo
 import sys
 
 app = Flask('packer-triage')
+app.mongo = None
+
+def connect_mongo():
+    """Connect to MongoDB database"""
+    mongo_addr = os.environ['MONGO_ADDRESS']
+    if mongo_addr == 'local':
+        mongo_addr = 'mongo:27017'
+
+    app.mongo = pymongo.MongoClient('mongodb://mongo:%s@%s' % (os.environ['MONGO_PASS'], mongo_addr))
 
 ##################
 ### LATEST API ###
@@ -67,12 +77,14 @@ def submit_v1():
 @app.route('/api/v1/results/<hash>', methods=['GET'])
 def results_v1(hash):
     """Get results for a sample, API v1"""
-    # TODO - Lookup the sample
-    #
+    if app.mongo is None:
+        connect_mongo()
+
     # Result should be a json that looks something like:
     #
     #     {'response': {'code': 0, 'description': 'OK'},
     #       'data': {
+    #         'hash': '...'  # the sample's hash (used to locate records)
     #         'label': 'foo',  # tl;dr, what should this sample be treated as (packed, unpacked, UPX, etc.)
     #         'is_packed': {'yes': 0.2, 'no': 0.8},               # binary classification
     #         'packer': {'upx': 0.912, 'pecompact': 0.0001, ...}  # multi-class
@@ -85,7 +97,17 @@ def results_v1(hash):
     # so for the frontend it should be as simple as slapping
     # the database query result into 'data'.
 
-    res = {'response': {'code': 0, 'description': 'OK'},
-           'data': {}}
+    try:
+        record = app.mongo['packertriage']['results'].find_one({'hash': hash})
+    except pymongo.errors.ServerSelectionTimeoutError:
+        res = {'response': {'code': 1, 'description': 'Internal Server Error'}}
+        return json.dumps(res), 500
+
+    if record is None:
+        # result doesn't exist in DB
+        res = {'response': {'code': 2, 'description': 'Result not found'}}
+    else:
+        res = {'response': {'code': 0, 'description': 'OK'},
+               'data': record}
 
     return json.dumps(res), 200

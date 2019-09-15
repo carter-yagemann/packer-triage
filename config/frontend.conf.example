@@ -8,7 +8,8 @@ FRONTEND_HOST_LOG_DIR="${PWD}/logs"
 #
 #   Setting this to "local" will create a private internal network
 #   amongst the containers (good for development and testing). The host
-#   can reach the frontend via http://localhost:9000.
+#   can reach the frontend via http://localhost:9000. Make sure the docker
+#   network 'packertriage' exists.
 #
 #   For production, provide a public IP address and port for the
 #   host (ex: "111.222.333.444:80").

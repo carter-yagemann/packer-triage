@@ -29,7 +29,7 @@ if [ ! -d "$HOST_MONGODB_DIR" ]; then
 fi
 
 if [ "$DB_MONGO_ADDRESS" == "local" ]; then
-    NETWORK_OPTS="--ip=10.0.22.2 -p 127.0.0.1:9001:27017"
+    NETWORK_OPTS="--net=packertriage --name=mongo -p 127.0.0.1:9001:27017"
 else
     NETWORK_OPTS="-p \"${DB_MONGO_ADDRESS}:27017\""
 fi

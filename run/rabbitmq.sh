@@ -23,7 +23,7 @@ if [ ! -f "$HOST_RABBIT_LOGFILE" ]; then
 fi
 
 if [ "$DB_RABBIT_ADDRESS" == "local" ]; then
-    NETWORK_OPTS="--ip=10.0.22.3 -p 127.0.0.1:9002:5672"
+    NETWORK_OPTS="--net=packertriage --name=rabbit -p 127.0.0.1:9002:5672"
 else
     NETWORK_OPTS="-p \"${DB_RABBIT_ADDRESS}:5672\""
 fi

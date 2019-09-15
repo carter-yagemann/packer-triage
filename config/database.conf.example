@@ -16,7 +16,8 @@ DB_HOST_DATA_DIR="${PWD}/data"
 #
 #   Setting this to "local" will create a private internal network
 #   amongst the containers (good for development and testing). The host
-#   can reach the mongo database via localhost:9001.
+#   can reach the mongo database via localhost:9001. Make sure the docker
+#   network 'packertriage' exists.
 #
 #   For production, provide a public IP address and port for the
 #   host (ex: "111.222.333.444:27017"). Note, other containers will use
