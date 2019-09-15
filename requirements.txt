@@ -5,6 +5,7 @@ matplotlib
 pandas
 pefile
 PyExifTool
+pymongo
 python-magic-win64
 recommonmark
 scikit-learn

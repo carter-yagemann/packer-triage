@@ -7,3 +7,6 @@ locally:
 
     cd config/
     cp frontend.conf.example frontend.conf
+    cp database.conf.example database.conf
+    # database.conf has passwords that must be changed
+    sed -i "s/\"something_secret\"/\"$( dd if=/dev/urandom bs=1 count=32 | base64 )\"/" database.conf

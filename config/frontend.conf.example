@@ -1,3 +1,15 @@
+# Number of worker threads used to handle incoming requests.
 FRONTEND_NUM_WORKERS=4
+
+# Where to write access and error logs on the host filesystem.
 FRONTEND_HOST_LOG_DIR="${PWD}/logs"
-FRONTEND_HOST_BIND="127.0.0.1:9000"
+
+# Where to bind the container on the host's end.
+#
+#   Setting this to "local" will create a private internal network
+#   amongst the containers (good for development and testing). The host
+#   can reach the frontend via http://localhost:9000.
+#
+#   For production, provide a public IP address and port for the
+#   host (ex: "111.222.333.444:80").
+FRONTEND_HOST_BIND="local"

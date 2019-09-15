@@ -12,6 +12,7 @@ Welcome to packer-triage's documentation!
 
    quick/install
    quick/config
+   quick/db
    quick/frontend
 
 .. toctree::

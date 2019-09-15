@@ -1,0 +1,30 @@
+#####################
+## GENERAL OPTIONS ##
+#####################
+
+# Where to store logs on the host filesystem
+DB_HOST_LOG_DIR="${PWD}/logs"
+
+# Where to store the databases on the host filesystem
+DB_HOST_DATA_DIR="${PWD}/data"
+
+#####################
+## MONGODB OPTIONS ##
+#####################
+
+# Where to bind the container on the host's end.
+#
+#   Setting this to "local" will create a private internal network
+#   amongst the containers (good for development and testing). The host
+#   can reach the mongo database via localhost:9001.
+#
+#   For production, provide a public IP address and port for the
+#   host (ex: "111.222.333.444:27017"). Note, other containers will use
+#   this address to connect.
+DB_MONGO_ADDRESS="local"
+# Password for the mongo database, you must change this!
+DB_MONGO_PASSWORD="something_secret"
+
+######################
+## RABBITMQ OPTIONS ##
+######################
