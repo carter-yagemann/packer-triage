@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Packed File Analysis &#8212; packer-triage  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="modeling" href="modules.html" />
+    <link rel="prev" title="Frontend" href="../quick/frontend.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="packed-file-analysis">
+<h1>Packed File Analysis<a class="headerlink" href="#packed-file-analysis" title="Permalink to this headline">¶</a></h1>
+<p>The goal of this project is to assess the viability of accurately detecting specific file packers using Machine Learning.  The hypothesis is that a neural network architecture will be able to take in a large number of raw bytes from packed files and learn patterns sufficient for accurate classification without the need for manual feature engineering.</p>
+<div class="section" id="project-structure">
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h2>
+<p>There are three main parts to this project.</p>
+<ol class="simple">
+<li><p>Profiling PE files.</p></li>
+<li><p>Packing PE files.</p></li>
+<li><p>Multi-class Classifier for packed files.</p></li>
+</ol>
+<div class="section" id="profiling-pe-files">
+<h3>1. Profiling PE Files<a class="headerlink" href="#profiling-pe-files" title="Permalink to this headline">¶</a></h3>
+<p>Implemented in profiler.py.  Takes in a directory containing files and returns basic file triage information similar to the metadata from VirusTotal.</p>
+<ul class="simple">
+<li><p>File Type (output of file command)</p></li>
+<li><p>PE metadata (imports, exports, sections, resources, code signing, strings summary)</p></li>
+<li><p>Exif metadata</p></li>
+<li><p>Yara rule evaluation</p></li>
+</ul>
+<p>The output is written to a file and sent to a local Elasticsearch instance.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">profiler</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">TEMP_DIRECTORY</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">-</span><span class="n">yr</span> <span class="n">YARA_RULES</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fd</span> <span class="n">FULL_DETAILS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT_DIRECTORY</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LABEL</span><span class="p">]</span>
+
+<span class="n">Parses</span> <span class="n">metadata</span> <span class="kn">from</span> <span class="nn">files</span> <span class="ow">and</span> <span class="n">stores</span> <span class="n">them</span> <span class="ow">in</span> <span class="n">log</span> <span class="n">files</span><span class="o">.</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">directory</span> <span class="n">DIRECTORY</span>
+                        <span class="n">Directory</span> <span class="n">containing</span> <span class="n">files</span> <span class="n">to</span> <span class="n">analyze</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">,</span> <span class="o">--</span><span class="n">file</span> <span class="n">FILE</span>  <span class="n">Path</span> <span class="n">to</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">file</span> <span class="n">to</span> <span class="n">analyze</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">t</span> <span class="n">TEMP_DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">temp_directory</span> <span class="n">TEMP_DIRECTORY</span>
+                        <span class="n">Where</span> <span class="n">temporary</span> <span class="n">work</span> <span class="n">area</span> <span class="ow">is</span> <span class="n">created</span> <span class="k">while</span> <span class="n">processing</span>
+                        <span class="n">files</span> <span class="k">if</span> <span class="n">needed</span> <span class="p">(</span><span class="n">compressed</span> <span class="n">files</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">yr</span> <span class="n">YARA_RULES</span><span class="p">,</span> <span class="o">--</span><span class="n">yara_rules</span> <span class="n">YARA_RULES</span>
+                        <span class="n">Path</span> <span class="n">to</span> <span class="n">yara</span> <span class="n">rules</span> <span class="n">to</span> <span class="n">use</span> <span class="k">with</span> <span class="n">analysis</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">fd</span> <span class="n">FULL_DETAILS</span><span class="p">,</span> <span class="o">--</span><span class="n">full_details</span> <span class="n">FULL_DETAILS</span>
+                        <span class="n">Full</span> <span class="n">details</span> <span class="n">will</span> <span class="n">include</span> <span class="n">a</span> <span class="n">large</span> <span class="n">nested</span> <span class="n">json</span> <span class="nb">object</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT_DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">output_directory</span> <span class="n">OUTPUT_DIRECTORY</span>
+                        <span class="p">(</span><span class="n">Optional</span><span class="p">)</span> <span class="n">Directory</span> <span class="n">to</span> <span class="n">save</span> <span class="n">parsed</span> <span class="n">data</span> <span class="n">to</span><span class="o">.</span> <span class="n">Default</span>
+                        <span class="ow">is</span> <span class="n">current</span> <span class="n">directory</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">l</span> <span class="n">LABEL</span><span class="p">,</span> <span class="o">--</span><span class="n">label</span> <span class="n">LABEL</span>
+                        <span class="p">(</span><span class="n">Optional</span><span class="p">)</span> <span class="n">Tag</span> <span class="n">results</span> <span class="k">with</span> <span class="n">this</span> <span class="n">column</span> <span class="ow">and</span> <span class="n">include</span> <span class="ow">in</span>
+                        <span class="n">output</span> <span class="n">filename</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">profiler</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">d</span> <span class="s2">&quot;E:\data\packed_malware_gatech\packed_mpress</span><span class="se">\000</span><span class="s2">00&quot;</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;E:\data\packed_malware_gatech</span><span class="se">\t</span><span class="s2">emp&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="s2">&quot;E:\data\packed_malware_gatech\profiler_data&quot;</span> <span class="o">-</span><span class="n">l</span> <span class="n">mpress</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="packing-pe-files">
+<h3>2. Packing PE Files<a class="headerlink" href="#packing-pe-files" title="Permalink to this headline">¶</a></h3>
+<p>This functionality was implemented in packer.py</p>
+<p>Packing PE files was implemented in a local Windows Virtual Machine with python 3.6 installed and no network access as a precaution.  The operation of this script works as follows:</p>
+<ol class="simple">
+<li><p>The script needs a directory of the files to pack (it will recursively gather a list all files in the directory and sub-directories).</p></li>
+<li><p>Next it runs multiple processes in parallel, each handling one file.</p></li>
+<li><p>Each original executable is copied to a temporary space, as many of the tools operate off of disk and some overwrite the original file provided.</p></li>
+<li><p>Some checks are performed to confirm the packing appeared to be successful, minimally this is a check that the hash of the file changed.</p></li>
+<li><p>The new file is saved in an output directory provided, with the filename being the same as the new hash value.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">packer</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT_DIRECTORY</span><span class="p">]</span>
+                 <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">TEMP_DIRECTORY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">PACKERS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span> <span class="n">CPUS</span><span class="p">]</span>
+
+<span class="n">Parses</span> <span class="n">metadata</span> <span class="kn">from</span> <span class="nn">files</span> <span class="ow">and</span> <span class="n">stores</span> <span class="n">them</span> <span class="ow">in</span> <span class="n">log</span> <span class="n">files</span><span class="o">.</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">directory</span> <span class="n">DIRECTORY</span>
+                        <span class="n">Directory</span> <span class="n">containing</span> <span class="n">files</span> <span class="n">to</span> <span class="n">analyze</span> <span class="p">(</span><span class="n">will</span> <span class="n">recurse</span> <span class="n">to</span>
+                        <span class="n">sub</span> <span class="n">directories</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">f</span> <span class="n">FILE</span><span class="p">,</span> <span class="o">--</span><span class="n">file</span> <span class="n">FILE</span>  <span class="n">Path</span> <span class="n">to</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">file</span> <span class="n">to</span> <span class="n">analyze</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT_DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">output_directory</span> <span class="n">OUTPUT_DIRECTORY</span>
+                        <span class="n">Base</span> <span class="n">directory</span> <span class="n">where</span> <span class="n">results</span> <span class="n">will</span> <span class="n">be</span> <span class="n">stored</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">t</span> <span class="n">TEMP_DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">temp_directory</span> <span class="n">TEMP_DIRECTORY</span>
+                        <span class="n">Where</span> <span class="n">temporary</span> <span class="n">work</span> <span class="n">area</span> <span class="ow">is</span> <span class="n">created</span> <span class="k">while</span> <span class="n">processing</span>
+                        <span class="n">files</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">p</span> <span class="n">PACKERS</span><span class="p">,</span> <span class="o">--</span><span class="n">packers</span> <span class="n">PACKERS</span>
+                        <span class="n">Comma</span> <span class="n">separated</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">packers</span> <span class="n">to</span> <span class="n">apply</span><span class="p">,</span> <span class="ow">or</span> <span class="s2">&quot;all&quot;</span> <span class="n">to</span>
+                        <span class="n">run</span> <span class="nb">all</span> <span class="n">supported</span> <span class="n">packers</span>
+  <span class="o">-</span><span class="n">c</span> <span class="n">CPUS</span><span class="p">,</span> <span class="o">--</span><span class="n">cpus</span> <span class="n">CPUS</span>  <span class="n">Number</span> <span class="n">of</span> <span class="n">processors</span> <span class="n">to</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">parallel</span><span class="o">.</span> <span class="n">Will</span> <span class="n">use</span> <span class="nb">all</span>
+                        <span class="n">available</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">specified</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Note: Several of the packers wrote temporary files in places like %TEMP% and the python script continuously attempts to clean any remnants of temp files left behind to avoid filling disk.</p>
+<p>Note: a powershell one-liner to kill any WerFault open windows helps keep the desktop tidy.  Recommend running it in the background, as several of the packers fail frequently and display numerous failure popups.</p>
+</div>
+<div class="section" id="classifying-pe-files">
+<h3>3. Classifying PE Files<a class="headerlink" href="#classifying-pe-files" title="Permalink to this headline">¶</a></h3>
+<p>Implemented in model.py.  This script can be used for training a model as well as predictions, loading a saved model.</p>
+<p>Model Training Features:</p>
+<ul class="simple">
+<li><p>By default this script will attempt to train a new model if just provided with a directory of files to process.</p></li>
+<li><p>The labels for those files are discovered by the directory path to the file and the list of text strings in the global variable “CLASSES”.</p></li>
+<li><p>As the model is being trained it writes checkpoint saves to a checkpoint directory with each epoch.</p></li>
+<li><p>The final model is saved to the saved_models directory and with a name containing any provided tag from the command line options.</p></li>
+<li><p>Finally, it will output a confusion matrix plot.  If a tag is provided, it will add it into the saved plot’s file name.</p></li>
+</ul>
+<p>To make predictions with the model, just provide it a directory and add the -p flag.  If there are multiple saved models in the saved_models directory, you can use the “tag” command line argument to specify which model to use.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">TAG</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span> <span class="n">EPOCHS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">]</span>
+
+<span class="n">By</span> <span class="n">default</span> <span class="n">will</span> <span class="n">build</span> <span class="n">a</span> <span class="n">new</span> <span class="n">model</span> <span class="ow">or</span> <span class="n">optionally</span> <span class="n">can</span> <span class="n">make</span> <span class="n">predictions</span> <span class="n">given</span> <span class="n">a</span>
+<span class="n">directory</span> <span class="n">of</span> <span class="n">files</span><span class="o">.</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">d</span> <span class="n">DIRECTORY</span><span class="p">,</span> <span class="o">--</span><span class="n">directory</span> <span class="n">DIRECTORY</span>
+                        <span class="n">Directory</span> <span class="n">containing</span> <span class="n">files</span> <span class="n">to</span> <span class="n">analyze</span> <span class="p">(</span><span class="n">will</span> <span class="n">recurse</span> <span class="n">to</span>
+                        <span class="n">sub</span> <span class="n">directories</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">t</span> <span class="n">TAG</span><span class="p">,</span> <span class="o">--</span><span class="n">tag</span> <span class="n">TAG</span>     <span class="n">Distinct</span> <span class="n">tag</span> <span class="n">that</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="k">as</span> <span class="n">a</span> <span class="n">label</span> <span class="n">on</span> <span class="n">saved</span>
+                        <span class="n">models</span> <span class="ow">and</span> <span class="n">saved</span> <span class="n">results</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">e</span> <span class="n">EPOCHS</span><span class="p">,</span> <span class="o">--</span><span class="n">epochs</span> <span class="n">EPOCHS</span>
+                        <span class="n">Number</span> <span class="n">of</span> <span class="n">epochs</span> <span class="n">used</span> <span class="ow">in</span> <span class="n">training</span> <span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+  <span class="o">-</span><span class="n">p</span><span class="p">,</span> <span class="o">--</span><span class="n">predict</span>         <span class="n">When</span> <span class="nb">set</span><span class="p">,</span> <span class="n">this</span> <span class="n">flag</span> <span class="n">indicates</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="n">make</span> <span class="n">model</span>
+                        <span class="n">predictions</span><span class="p">,</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">train</span> <span class="n">a</span> <span class="n">new</span> <span class="n">model</span><span class="o">.</span> <span class="n">Optionally</span>
+                        <span class="n">used</span> <span class="k">with</span> <span class="n">a</span> <span class="n">tag</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">portion</span> <span class="n">of</span> <span class="n">model</span> <span class="n">name</span> <span class="n">to</span>
+                        <span class="n">load</span> <span class="n">when</span> <span class="n">predicting</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this headline">¶</a></h2>
+<p>This proof of concept was initially tested with a dataset of 18k labeled files and five classes (“not packed”, “mpress”, “UPX”, “Aspack”, and “andpakk2”).  Plan on testing this with a larger dataset with a few hundred thousand files and coverage for at least 10 packing tools in the near future.</p>
+<p><img alt="Alt text" src="../_images/accuracy_plot.png" /></p>
+<p><img alt="Alt text" src="../_images/loss_plot.png" /></p>
+<p><img alt="Alt text" src="../_images/confusion_matrix.png" /></p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">packer-triage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/db.html">Databases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/frontend.html">Frontend</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Details:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Packed File Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluation">Evaluation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend/modules.html">frontend</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../quick/frontend.html" title="previous chapter">Frontend</a></li>
+      <li>Next: <a href="modules.html" title="next chapter">modeling</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Carter Yagemann.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modeling/modeling.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

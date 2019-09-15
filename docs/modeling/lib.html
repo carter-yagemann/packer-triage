@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>lib package &#8212; packer-triage  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="model module" href="model.html" />
+    <link rel="prev" title="modeling" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="lib-package">
+<h1>lib package<a class="headerlink" href="#lib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lib.confusion_matrix">
+<span id="lib-confusion-matrix-module"></span><h2>lib.confusion_matrix module<a class="headerlink" href="#module-lib.confusion_matrix" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lib.confusion_matrix.configcell_text_and_colors">
+<code class="sig-prename descclassname">lib.confusion_matrix.</code><code class="sig-name descname">configcell_text_and_colors</code><span class="sig-paren">(</span><em class="sig-param">array_df</em>, <em class="sig-param">lin</em>, <em class="sig-param">col</em>, <em class="sig-param">oText</em>, <em class="sig-param">facecolors</em>, <em class="sig-param">posi</em>, <em class="sig-param">fz</em>, <em class="sig-param">fmt</em>, <em class="sig-param">show_null_values=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.confusion_matrix.configcell_text_and_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>config cell text and colors
+and return text elements to add and to dell
+&#64;TODO: use fmt</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.confusion_matrix.get_new_fig">
+<code class="sig-prename descclassname">lib.confusion_matrix.</code><code class="sig-name descname">get_new_fig</code><span class="sig-paren">(</span><em class="sig-param">fn, figsize=[9, 9]</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.confusion_matrix.get_new_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init graphics</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.confusion_matrix.insert_totals">
+<code class="sig-prename descclassname">lib.confusion_matrix.</code><code class="sig-name descname">insert_totals</code><span class="sig-paren">(</span><em class="sig-param">df_cm</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.confusion_matrix.insert_totals" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert total column and line (the last ones)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.confusion_matrix.plot_confusion_matrix_from_data">
+<code class="sig-prename descclassname">lib.confusion_matrix.</code><code class="sig-name descname">plot_confusion_matrix_from_data</code><span class="sig-paren">(</span><em class="sig-param">y_test, predictions, columns=None, annot=True, cmap='Oranges', fmt='.2f', fz=11, lw=0.5, cbar=False, figsize=[8, 8], show_null_values=0, pred_val_axis='lin', filepath=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.confusion_matrix.plot_confusion_matrix_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot confusion matrix function with y_test (actual values) and predictions (predic),
+whitout a confusion matrix yet</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.confusion_matrix.pretty_plot_confusion_matrix">
+<code class="sig-prename descclassname">lib.confusion_matrix.</code><code class="sig-name descname">pretty_plot_confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param">df_cm, annot=True, cmap='Oranges', fmt='.2f', fz=11, lw=0.5, cbar=False, figsize=[8, 8], show_null_values=0, pred_val_axis='y', filepath=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.confusion_matrix.pretty_plot_confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>print conf matrix with default layout (like matlab)
+params:</p>
+<blockquote>
+<div><p>df_cm          dataframe (pandas) without totals
+annot          print text in each cell
+cmap           Oranges,Oranges_r,YlGnBu,Blues,RdBu, … see:
+fz             fontsize
+lw             linewidth
+pred_val_axis  where to show the prediction values (x or y axis)</p>
+<blockquote>
+<div><p>‘col’ or ‘x’: show predicted values in columns (x axis) instead lines
+‘lin’ or ‘y’: show predicted values in lines   (y axis)</p>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lib.exif">
+<span id="lib-exif-module"></span><h2>lib.exif module<a class="headerlink" href="#module-lib.exif" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lib.exif.Exif_Engine">
+<em class="property">class </em><code class="sig-prename descclassname">lib.exif.</code><code class="sig-name descname">Exif_Engine</code><a class="headerlink" href="#lib.exif.Exif_Engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lib.exif.Exif_Engine.analyze">
+<code class="sig-name descname">analyze</code><span class="sig-paren">(</span><em class="sig-param">file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.exif.Exif_Engine.analyze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.exif.Exif_Engine.summarize_results">
+<code class="sig-name descname">summarize_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.exif.Exif_Engine.summarize_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lib.file_data_pipeline">
+<span id="lib-file-data-pipeline-module"></span><h2>lib.file_data_pipeline module<a class="headerlink" href="#module-lib.file_data_pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lib.file_data_pipeline.DataGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">lib.file_data_pipeline.</code><code class="sig-name descname">DataGenerator</code><span class="sig-paren">(</span><em class="sig-param">data_df</em>, <em class="sig-param">batch_size=32</em>, <em class="sig-param">dim=(28</em>, <em class="sig-param">28</em>, <em class="sig-param">1)</em>, <em class="sig-param">n_channels=1</em>, <em class="sig-param">n_classes=10</em>, <em class="sig-param">shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.file_data_pipeline.DataGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.utils.data_utils.Sequence</span></code></p>
+<p>Generates data for Tensorflow data pipeline</p>
+<dl class="method">
+<dt id="lib.file_data_pipeline.DataGenerator.on_epoch_end">
+<code class="sig-name descname">on_epoch_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.file_data_pipeline.DataGenerator.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>At the end of each epoch, this function prepares the list of data point indexes.
+:return: list of indexes for each epoch</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lib.line_plots">
+<span id="lib-line-plots-module"></span><h2>lib.line_plots module<a class="headerlink" href="#module-lib.line_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lib.line_plots.get_plot">
+<code class="sig-prename descclassname">lib.line_plots.</code><code class="sig-name descname">get_plot</code><span class="sig-paren">(</span><em class="sig-param">file1</em>, <em class="sig-param">file2</em>, <em class="sig-param">label1</em>, <em class="sig-param">label2</em>, <em class="sig-param">title</em>, <em class="sig-param">save_plot_filename</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.line_plots.get_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-lib.pe_analysis">
+<span id="lib-pe-analysis-module"></span><h2>lib.pe_analysis module<a class="headerlink" href="#module-lib.pe_analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lib.pe_analysis.PEFile">
+<em class="property">class </em><code class="sig-prename descclassname">lib.pe_analysis.</code><code class="sig-name descname">PEFile</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.analyze">
+<code class="sig-name descname">analyze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.analyze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.get_authenticode">
+<code class="sig-name descname">get_authenticode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.get_authenticode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.get_exports">
+<code class="sig-name descname">get_exports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.get_exports" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.get_imports">
+<code class="sig-name descname">get_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.get_imports" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.get_resources">
+<code class="sig-name descname">get_resources</code><span class="sig-paren">(</span><em class="sig-param">depth=0</em>, <em class="sig-param">resource=None</em>, <em class="sig-param">file_details={}</em>, <em class="sig-param">resource_path=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.get_resources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.get_sections">
+<code class="sig-name descname">get_sections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.get_sections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.pe_analysis.PEFile.summarize_results">
+<code class="sig-name descname">summarize_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.pe_analysis.PEFile.summarize_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lib.utils">
+<span id="lib-utils-module"></span><h2>lib.utils module<a class="headerlink" href="#module-lib.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lib.utils.basic_stats">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">basic_stats</code><span class="sig-paren">(</span><em class="sig-param">numeric_list</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.basic_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list, safetly computes the min, max, mean, and standard deviation.  Returns 0, when not enough values for the computation are present in the list.
+:param numeric_list:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.compress_file">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">compress_file</code><span class="sig-paren">(</span><em class="sig-param">input_filepath</em>, <em class="sig-param">output_filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.compress_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.decompress_file">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">decompress_file</code><span class="sig-paren">(</span><em class="sig-param">input_filepath</em>, <em class="sig-param">output_filepath='None'</em>, <em class="sig-param">in_memory=False</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.decompress_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_filepath</strong> – </p></li>
+<li><p><strong>output_filepath</strong> – </p></li>
+<li><p><strong>in_memory</strong> – If True, output_filepath is ignored and a buffer containing the uncompressed data is returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.get_entropy">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">get_entropy</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.get_entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.get_files">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">get_files</code><span class="sig-paren">(</span><em class="sig-param">directory_path</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.get_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.get_hashes">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">get_hashes</code><span class="sig-paren">(</span><em class="sig-param">filepath=None</em>, <em class="sig-param">buffer=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.get_hashes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.get_strings">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">get_strings</code><span class="sig-paren">(</span><em class="sig-param">filepath=None</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.get_strings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lib.utils.get_type">
+<code class="sig-prename descclassname">lib.utils.</code><code class="sig-name descname">get_type</code><span class="sig-paren">(</span><em class="sig-param">filepath=None</em>, <em class="sig-param">buffer=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.utils.get_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-lib.yara_engine">
+<span id="lib-yara-engine-module"></span><h2>lib.yara_engine module<a class="headerlink" href="#module-lib.yara_engine" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lib.yara_engine.Yara_Engine">
+<em class="property">class </em><code class="sig-prename descclassname">lib.yara_engine.</code><code class="sig-name descname">Yara_Engine</code><span class="sig-paren">(</span><em class="sig-param">rules_path=None</em>, <em class="sig-param">compiled_rules_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.yara_engine.Yara_Engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lib.yara_engine.Yara_Engine.analyze">
+<code class="sig-name descname">analyze</code><span class="sig-paren">(</span><em class="sig-param">file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#lib.yara_engine.Yara_Engine.analyze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lib.yara_engine.Yara_Engine.summarize_results">
+<code class="sig-name descname">summarize_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lib.yara_engine.Yara_Engine.summarize_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lib" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">packer-triage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/db.html">Databases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick/frontend.html">Frontend</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Details:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modeling.html">Packed File Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">modeling</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lib package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packer.html">packer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="profiler.html">profiler module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend/modules.html">frontend</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">modeling</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">modeling</a></li>
+      <li>Next: <a href="model.html" title="next chapter">model module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Carter Yagemann.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modeling/lib.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

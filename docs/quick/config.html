@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Configuration &#8212; packer-triage  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Databases" href="db.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>All configurations are kept in the <code class="docutils literal notranslate"><span class="pre">config</span></code> directory. All config files are
+required and come with an example named <code class="docutils literal notranslate"><span class="pre">*.conf.example</span></code>. For this tutorial,
+we’ll use the defaults as-is, which will give us a sane setup for running
+locally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># default configs connect all the containers to a docker network</span>
+<span class="c1"># called &#39;packertriage&#39;, which we must create</span>
+<span class="n">docker</span> <span class="n">network</span> <span class="n">create</span> <span class="n">packertriage</span>
+
+<span class="n">cd</span> <span class="n">config</span><span class="o">/</span>
+<span class="n">cp</span> <span class="n">frontend</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">example</span> <span class="n">frontend</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">cp</span> <span class="n">database</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">example</span> <span class="n">database</span><span class="o">.</span><span class="n">conf</span>
+<span class="c1"># database.conf has passwords that must be changed</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/</span><span class="se">\&quot;</span><span class="s2">something_secret</span><span class="se">\&quot;</span><span class="s2">/</span><span class="se">\&quot;</span><span class="s2">$( dd if=/dev/urandom bs=1 count=32 | base64 )</span><span class="se">\&quot;</span><span class="s2">/&quot;</span> <span class="n">database</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/</span><span class="se">\&quot;</span><span class="s2">another_secret</span><span class="se">\&quot;</span><span class="s2">/</span><span class="se">\&quot;</span><span class="s2">$( dd if=/dev/urandom bs=1 count=32 | base64 )</span><span class="se">\&quot;</span><span class="s2">/&quot;</span> <span class="n">database</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">packer-triage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db.html">Databases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">Frontend</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Details:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modeling/modeling.html">Packed File Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modeling/modules.html">modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend/modules.html">frontend</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="db.html" title="next chapter">Databases</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Carter Yagemann.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/quick/config.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
