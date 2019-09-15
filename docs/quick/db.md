@@ -8,3 +8,7 @@ The `run` directory contains scripts for starting each database as a docker cont
 ## Starting a MongoDB instance
 
 Simply run the script: `./run/mongo.sh`
+
+## Starting a RabbitMQ instance
+
+Simply run the script: `./run/rabbitmq.sh`
