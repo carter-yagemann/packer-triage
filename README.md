@@ -1,4 +1,5 @@
 # packer-triage
 Fast, elastic, static, ML-based malware packer identifier.
 
-See `docs` for installation and quick-start guides.
+Documentation, including install and quick-start guides,
+is available [here](https://carter-yagemann.github.io/packer-triage/).
