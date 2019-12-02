@@ -164,7 +164,7 @@ def train(filepath, tag):
 def predict(filepath, tag):
     if tag is None:
         tag = ''
-    all_files = utils.get_files('./saved_models')
+    all_files = utils.get_files('../test/models')
     model_filepath = ''
     for filename in all_files:
         if tag in filename and filename.endswith('.h5'):
