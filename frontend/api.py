@@ -24,6 +24,13 @@ import json
 import os
 import pymongo
 import sys
+from persistor import Persistor
+from tasks import *
+
+@app.before_first_request
+def setup_the_things():
+    tasks.persistor = Persistor()
+    tasks.model = 
 
 app = Flask('packer-triage')
 app.mongo = None
@@ -66,6 +73,7 @@ def submit_v1():
     hash = sha256(file_data).hexdigest()
 
     # TODO - Submit copy for work
+    tasks.get_prediction.delay(hash, file)
 
     # include hash in response so there's no ambiguity on what to
     # request when querying /results
