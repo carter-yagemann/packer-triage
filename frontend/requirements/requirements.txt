@@ -11,3 +11,5 @@ signify
 Sphinx
 yara-python
 celery
+pymongo
+tensorflow

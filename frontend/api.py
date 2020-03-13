@@ -18,30 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with packer-triage.  If not, see <https://www.gnu.org/licenses/>.
 
+import base64
 from flask import *
 from hashlib import sha256
 import json
 import os
 import pymongo
 import sys
-from persistor import Persistor
-from tasks import *
-
-@app.before_first_request
-def setup_the_things():
-    tasks.persistor = Persistor()
-    tasks.model = 
+import tasks
 
 app = Flask('packer-triage')
-app.mongo = None
-
-def connect_mongo():
-    """Connect to MongoDB database"""
-    mongo_addr = os.environ['MONGO_ADDRESS']
-    if mongo_addr == 'local':
-        mongo_addr = 'mongo:27017'
-
-    app.mongo = pymongo.MongoClient('mongodb://mongo:%s@%s' % (os.environ['MONGO_PASS'], mongo_addr))
+app.mongo = pymongo.MongoClient('mongodb://mongo:%s@%s' % (
+        os.environ['MONGO_PASS'], os.environ['MONGO_ADDRESS']))
 
 ##################
 ### LATEST API ###
@@ -52,10 +40,10 @@ def submit():
     """Submit a sample for analysis"""
     return submit_v1()
 
-@app.route('/api/results/<hash>', methods=['GET'])
-def results(hash):
+@app.route('/api/results/<_hash>', methods=['GET'])
+def results(_hash):
     """Get results for a sample"""
-    return results_v1(hash)
+    return results_v1(_hash)
 
 #####################
 ### API VERSION 1 ###
@@ -68,26 +56,24 @@ def submit_v1():
         res = {'response': {'code': 2, 'description': 'No file in request'}}
         return json.dumps(res), 400
 
-    file = request.files['file']
-    file_data = file.read()
-    hash = sha256(file_data).hexdigest()
+    _file = request.files['file']
+    file_data = _file.read()
+    _hash = sha256(file_data).hexdigest()
 
-    # TODO - Submit copy for work
-    tasks.get_prediction.delay(hash, file)
+    # submit copy for work
+    file_data_encoded = base64.b64encode(file_data).decode("ascii")
+    tasks.get_prediction.delay(_hash, file_data_encoded)
 
     # include hash in response so there's no ambiguity on what to
     # request when querying /results
     res = {'response': {'code': 0, 'description': 'OK'},
-           'data': hash}
+           'data': _hash}
 
     return json.dumps(res), 200
 
-@app.route('/api/v1/results/<hash>', methods=['GET'])
-def results_v1(hash):
+@app.route('/api/v1/results/<_hash>', methods=['GET'])
+def results_v1(_hash):
     """Get results for a sample, API v1"""
-    if app.mongo is None:
-        connect_mongo()
-
     # Result should be a json that looks something like:
     #
     #     {'response': {'code': 0, 'description': 'OK'},
@@ -106,15 +92,15 @@ def results_v1(hash):
     # the database query result into 'data'.
 
     try:
-        record = app.mongo['packertriage']['results'].find_one({'hash': hash})
+        record = app.mongo['packertriage']['results'].find_one({'hash': _hash})
     except pymongo.errors.ServerSelectionTimeoutError:
         res = {'response': {'code': 1, 'description': 'Internal Server Error'}}
         return json.dumps(res), 500
 
     if record is None:
-        # result doesn't exist in DB
         res = {'response': {'code': 2, 'description': 'Result not found'}}
     else:
+        del record['_id']
         res = {'response': {'code': 0, 'description': 'OK'},
                'data': record}
 

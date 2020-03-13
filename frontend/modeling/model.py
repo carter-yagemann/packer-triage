@@ -22,9 +22,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import argparse
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
-import lib.utils as utils
-from lib.file_data_pipeline import DataGenerator
-from lib.confusion_matrix import plot_confusion_matrix_from_data
+import modeling.lib.utils as utils
+from modeling.lib.file_data_pipeline import DataGenerator
+from modeling.lib.confusion_matrix import plot_confusion_matrix_from_data
 import pandas as pd
 import numpy as np
 import os
@@ -161,10 +161,10 @@ def train(filepath, tag):
     plot_confusion_matrix_from_data(actual, predictions, CLASSES, filepath='./{}_{}_confusion.png'.format(datetime.now().isoformat().replace(':',''), tag))
 
 
-def predict(filepath, tag):
+def predict(model_file_path, data_file_path, tag):
     if tag is None:
         tag = ''
-    all_files = utils.get_files('../test/models')
+    all_files = utils.get_files(model_file_path)
     model_filepath = ''
     for filename in all_files:
         if tag in filename and filename.endswith('.h5'):
@@ -176,26 +176,25 @@ def predict(filepath, tag):
 
     restored_model = models.load_model(model_filepath)
 
-    files_to_predict = utils.get_files(filepath)
+    files_to_predict = utils.get_files(data_file_path)
     df_predict_files = pd.DataFrame(files_to_predict, columns=['data_reference'])
     df_predict_files['label'] = -1
 
     data_pipeline_eval = DataGenerator(df_predict_files, batch_size=1, dim=(512, 512), n_channels=1, n_classes=len(CLASSES), shuffle=False)
-    results = restored_model.predict_generator(data_pipeline_eval)
-    predictions = results.argmax(axis=1)
+    results = restored_model.predict(data_pipeline_eval)
+    predictions = {}
+    single_res = results.argmax(axis=1)
 
-    prediction_results = []
-    for idx in range(len(predictions)):
+    for res, cls in zip(results.tolist()[0], CLASSES):
+        predictions[cls] = res
+        
+    for idx in range(len(single_res)):
         entry = {}
         entry['filename'] = df_predict_files.iloc[idx]['data_reference']
-        entry['predicted_label_index'] = predictions[idx]
-        entry['predicted_label'] = translate_class(predictions[idx])
-        prediction_results.append(entry)
+        entry['predicted_label_index'] = single_res[idx].tolist()
+        entry['predicted_label'] = translate_class(single_res[idx])
 
-    df_predictions = pd.DataFrame(prediction_results)
-    print(df_predictions)
-
-    return df_predictions
+    return {"Prediction" : entry, "Results" : predictions}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='By default will build a new model or optionally can make predictions given a directory of files.')
