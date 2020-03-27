@@ -1,0 +1,15 @@
+elasticsearch
+matplotlib
+pandas
+pefile
+PyExifTool
+python-magic-win64
+recommonmark
+scikit-learn
+seaborn
+signify
+Sphinx
+yara-python
+celery
+pymongo
+tensorflow

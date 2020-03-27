@@ -8,6 +8,10 @@ DB_HOST_LOG_DIR="${PWD}/logs"
 # Where to store the databases on the host filesystem
 DB_HOST_DATA_DIR="${PWD}/data"
 
+# The name of the model workers should use. Must be placed in
+# ${DB_HOST_DATA_DIR}/models
+MODEL_NAME="something.h5"
+
 #####################
 ## MONGODB OPTIONS ##
 #####################
