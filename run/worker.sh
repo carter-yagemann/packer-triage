@@ -37,7 +37,6 @@ docker run -it --rm                                  \
     -e "RABBITMQ_DEFAULT_PASS=${DB_RABBIT_PASSWORD}" \
     -e "RABBITMQ_ADDRESS=$RABBIT_ADDRESS"            \
     -e "MODEL_NAME=$MODEL_NAME"                      \
-    -e "MODEL_PATH=$MODEL_PATH"                      \
     -v "${DB_HOST_DATA_DIR}/models:/models"          \
     -v "${DB_HOST_DATA_DIR}/samples:/samples"        \
     -v "${DB_HOST_LOG_DIR}:/logs"                    \
